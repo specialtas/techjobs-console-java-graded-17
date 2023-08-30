@@ -75,7 +75,7 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
@@ -89,17 +89,50 @@ public class JobData {
      * @param value The search term to look for
      * @return      List of all jobs with at least one field containing the value
      */
-    public static ArrayList<HashMap<String, String>> findByValue(String value) {
-
+    public static ArrayList<HashMap<String, String>> findByValueInAllColumns(String value) {
         // load data, if not already loaded
         loadData();
 
-        // TODO - implement this method
-        return null;
+        ArrayList<HashMap<String, String>> matchingJobs = new ArrayList<>();
+
+        for (HashMap<String, String> job : allJobs) {
+            boolean foundInAnyColumn = false;
+
+            for (String column : job.keySet()) {
+                String columnValue = job.get(column);
+
+                if (columnValue != null && columnValue.toLowerCase().contains(value.toLowerCase())) {
+                    foundInAnyColumn = true;
+                    break;
+                }
+            }
+
+            if (foundInAnyColumn) {
+                matchingJobs.add(job);
+            }
+        }
+
+        return matchingJobs;
+    }
+    public static ArrayList<HashMap<String, String>> findByValue(String value, String column) {
+        // load data, if not already loaded
+        loadData();
+
+        ArrayList<HashMap<String, String>> matchingJobs = new ArrayList<>();
+
+        for (HashMap<String, String> job : allJobs) {
+            String columnValue = job.get(column);
+
+            if (columnValue != null && columnValue.toLowerCase().contains(value.toLowerCase())) {
+                matchingJobs.add(job);
+            }
+        }
+
+        return matchingJobs;
     }
 
-    /**
-     * Read in data from a CSV file and store it in a list
+
+    /*** Read in data from a CSV file and store it in a list
      */
     private static void loadData() {
 

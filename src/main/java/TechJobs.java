@@ -10,7 +10,7 @@ public class TechJobs {
 
     static Scanner in = new Scanner(System.in);
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
 
         // Initialize our field map with key/name pairs
         HashMap<String, String> columnChoices = new HashMap<>();
@@ -61,11 +61,15 @@ public class TechJobs {
                 System.out.println("\nSearch term:");
                 String searchTerm = in.nextLine();
 
+                ArrayList<HashMap<String, String>> searchResults;
+
                 if (searchField.equals("all")) {
-                    printJobs(JobData.findByValue(searchTerm));
+                    searchResults = JobData.findByValueInAllColumns(searchTerm);
                 } else {
-                    printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
+                    searchResults = JobData.findByValue(searchTerm, searchField);
                 }
+
+                printJobs(searchResults);
             }
         }
     }
@@ -112,14 +116,25 @@ public class TechJobs {
                 validChoice = true;
             }
 
-        } while(!validChoice);
+        } while (!validChoice);
 
         return choiceKeys[choiceIdx];
     }
 
     // Print a list of jobs
-    private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
-
-        System.out.println("printJobs is not implemented yet");
+    private static void printJobs(ArrayList<HashMap<String, String>> huntJobs) {
+        if (!huntJobs.isEmpty()) {
+            for (HashMap<String, String> jobBag : huntJobs) {
+                // this iterates through the key-value pairs in the job HashMap
+                System.out.println("\n*****");
+                for (String jobKey : jobBag.keySet()) {
+                    String jobValue = jobBag.get(jobKey);
+                    System.out.println(jobKey + ": " + jobValue);
+                }
+                System.out.println("*****"); // Prints asterisks to separate job entries
+            }
+        } else {
+            System.out.print("No Results");
+        }
     }
 }
